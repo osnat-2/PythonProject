@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <title>Workboard</title>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <a class="brand" href="{% url 'home' %}"><span class="brand-mark">W</span> Workboard</a>
+            <div class="topbar-meta">
+                <span>{{ user.firstname }} {{ user.lastname }}</span>
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="link-button" type="submit">Log out</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="page">
+            <div class="dashboard-head">
+                <div>
+                    <p class="eyebrow">{{ user.get_role_display }} workspace</p>
+                    <h1>Make progress visible.</h1>
+                    <p class="lede">A clear view of what needs attention, what is moving, and what is done.</p>
+                </div>
+                {% if user.role == 'A' %}
+                    <div class="actions"><a class="button button-primary" href="{% url 'add_task' %}">+ New task</a></div>
+                {% endif %}
+            </div>
+
+            <div class="toolbar">
+                <form class="filter-form" method="GET" action="{% url 'home' %}">
+                    <select name="status" aria-label="Filter by status">
+                        <option value="">All statuses</option>
+                        <option value="N">New</option>
+                        <option value="I">In process</option>
+                        <option value="C">Completed</option>
+                    </select>
+                    <select name="responsible" aria-label="Filter by employee">
+                        <option value="">All employees</option>
+                        {% for u in users %}<option value="{{ u.id }}">{{ u.firstname }} {{ u.lastname }}</option>{% endfor %}
+                    </select>
+                    <button class="button button-quiet" type="submit">Filter tasks</button>
+                </form>
+            </div>
+
+            {% if tasks %}
+                <section class="task-grid" aria-label="Task list">
+                    {% for task in tasks %}
+                        <article class="task-card">
+                            <div class="card-meta">
+                                <span>#{{ task.id|stringformat:"03d" }}</span>
+                                <span class="status {% if task.status == 'C' %}status-completed{% elif task.status == 'I' %}status-process{% endif %}">{{ task.get_status_display }}</span>
+                            </div>
+                            <h2>{{ task.title }}</h2>
+                            <p>{{ task.description }}</p>
+                            {% if task.responsible %}<div class="card-meta">Assigned to {{ task.responsible.firstname }}</div>{% endif %}
+                            <div class="card-actions">
+                                {% if user.role == 'E' and task.responsible == None %}<a class="button button-primary" href="{% url 'associate_task' task.id %}">Take task</a>
+                                {% elif user.role == 'E' and task.responsible == user %}<a class="button button-primary" href="{% url 'report_completed' task.id %}">Mark complete</a>
+                                {% elif user.role == 'A' %}<a class="button button-quiet" href="{% url 'update_task' task.id %}">Edit</a>{% if task.responsible == None %}<a class="button button-danger" href="{% url 'delete_task' task.id %}">Delete</a>{% endif %}{% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </section>
+            {% else %}<div class="empty-state">No tasks match this view yet.</div>{% endif %}
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <title>Choose role | Workboard</title>
+</head>
+<body class="auth-wrap"><main class="form-panel"><p class="eyebrow">One last step</p><h1>Choose your role.</h1><p class="lede">Set the kind of work you will manage in Workboard.</p>
+    <form class="form-stack" method="POST" action="{% url 'choose_role' %}">
+        {% csrf_token %}
+        <label class="form-field" for="role">Role<select id="role" name="role" required>
+            <option value="A">Admin</option>
+            <option value="E">Employee</option>
+        </select></label>
+        <button class="button button-primary" type="submit">Continue</button>
+    </form>
+</main>
+</body>
+</html>

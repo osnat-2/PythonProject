@@ -1,0 +1,10 @@
+<!-- delete_task.html -->
+<!-- אין צורך בטופס נפרד למחיקת משימה, כי המחיקה מתבצעת בלחיצה על קישור מה-home.html -->
+<!-- אם בכל זאת רוצים טופס אישור למחיקה, אפשר לעשות כך: -->
+
+<form method="POST" action="{% url 'delete_task' task.id %}">
+    {% csrf_token %}
+    <p>Are you sure you want to delete the task "{{ task.title }}"?</p>
+    <button type="submit">Yes, Delete</button>
+    <a href="{% url 'home' %}">Cancel</a>
+</form>

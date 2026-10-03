@@ -1,0 +1,6 @@
+{% load static %}<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="{% static 'css/app.css' %}"><title>Edit task | Workboard</title></head>
+<body class="auth-wrap"><main class="form-panel"><p class="eyebrow">Task #{{ task.id|stringformat:"03d" }}</p><h1>Refine the work.</h1><form class="form-stack" method="POST">{% csrf_token %}<label class="form-field">Title<input type="text" name="title" value="{{ task.title }}" required></label><label class="form-field">Description<textarea name="description" rows="6" required>{{ task.description }}</textarea></label><label class="form-field">Status<select name="status">
+        <option value="N" {% if task.status == 'N' %}selected{% endif %}>New</option>
+        <option value="I" {% if task.status == 'I' %}selected{% endif %}>In process</option>
+        <option value="C" {% if task.status == 'C' %}selected{% endif %}>Completed</option>
+    </select></label><button class="button button-primary" type="submit">Save changes</button></form><p class="form-footer"><a href="{% url 'home' %}">Back to board</a></p></main></body></html>

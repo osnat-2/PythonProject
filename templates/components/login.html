@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <title>Sign in | Workboard</title>
+</head>
+<body class="auth-wrap">
+    <main class="form-panel">
+        <p class="eyebrow">Welcome back</p>
+        <h1>Sign in to your board.</h1>
+        <form class="form-stack" method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <label class="form-field" for="username">Username<input type="text" id="username" name="username" required></label>
+            <label class="form-field" for="password">Password<input type="password" id="password" name="password" required></label>
+            {% if error %}<p class="error">{{ error }}</p>{% endif %}
+            <button class="button button-primary" type="submit">Sign in</button>
+        </form>
+        <p class="form-footer">New to Workboard? <a href="{% url 'register' %}">Create an account</a></p>
+    </main>
+</body>
+</html>
